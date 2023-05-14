@@ -129,11 +129,11 @@ export class DocumentController {
    * @returns new document with the information provided
    */
   private buildDocument(id: string, name: string, owner: string): Document {
-
+    let documentNameWithoutExtension = Utils.removeFileExtension(name);
     return new Document(
       id,
       name,
-      '',
+      `${documentNameWithoutExtension}.png`,
       owner
     );
   }
