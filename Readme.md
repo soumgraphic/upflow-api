@@ -39,9 +39,12 @@ git clone https://github.com/soumgraphic/upflow-api.git
 
 **2. Install dependencies**
 
-Globally with TypeScript
 ```bash
 npm install
+```
+
+Globally with TypeScript
+```bash
 npm install -g typescript
 npm install -g ts-node
 ```
@@ -63,7 +66,7 @@ npm start
 
 ## Explore Rest APIs
 
-The API defines following services.
+The API defines following endpoints.
 
 ### Documents
 
