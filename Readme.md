@@ -1,0 +1,1 @@
+🎉(setup) added project dev dependencies
