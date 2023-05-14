@@ -1,13 +1,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import * as pdf2img from 'pdf-img-convert';
+import axios from 'axios';
 import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { DocumentService } from '../services/documents.service';
 import { Document } from '../models/document.model';
-import { DocumentResponse } from '../models/document.response.models';
 import { Utils } from '../utilities/utils';
-import axios from 'axios';
-import * as pdf2img from 'pdf-img-convert';
+import { DocumentResponse } from '../models/document.response.models';
 
 export class DocumentController {
 
@@ -47,7 +47,7 @@ export class DocumentController {
 
     // -- Get document name from url 
     const documentName = path.basename(docUrl);
-    
+
     // -- Check document is pdf
     if (!Utils.isValidPdfUrl(docUrl)) {
       console.log("Error: invalid pdf url");
@@ -107,10 +107,10 @@ export class DocumentController {
   }
 
   /**
- * Get document list
- * @param req the http request object
- * @param res the http response object
- */
+   * Get document list
+   * @param req the http request object
+   * @param res the http response object
+   */
   public get(req: Request, res: Response): void {
     // -- Get api host url
     let fullUrl: string = Utils.getFullUrl(req);
@@ -119,6 +119,90 @@ export class DocumentController {
       .get()
       .map((document) => Utils.mapToDocumentResponse(fullUrl, document));
     res.send(documentResponses);
+  }
+
+  /**
+   * Get document by id
+   * @param req the http request object
+   * @param res the http response object
+   */
+  public getById(req: Request, res: Response): void {
+    let document = this.documentService.getById(req.params.id);
+    if (document) {
+      // -- Get api host url 
+      let fullUrl: string = Utils.getFullUrl(req);
+      // -- Build document with api host url to view or download pdf file
+      let documentResponse: DocumentResponse = Utils.mapToDocumentResponse(fullUrl, document);
+      res.send(documentResponse);
+    } else {
+      res.status(404).send({
+        'error': 'document not found'
+      });
+    }
+  }
+
+  /**
+   * Get document by name
+   * @param req the http request object
+   * @param res the http response object
+   */
+  public getByName(req: Request, res: Response): void {
+    let document = this.documentService.getByName(req.query.name as string);
+    if (document) {
+      // -- Get api host url 
+      let fullUrl: string = Utils.getFullUrl(req);
+      // -- Build document with api host url to view or download pdf file
+      let documentResponse: DocumentResponse = Utils.mapToDocumentResponse(fullUrl, document);
+      res.send(documentResponse);
+    } else {
+      res.status(404).send({
+        'error': 'document not found'
+      });
+    }
+  }
+
+  /**
+   * Get pdf document file by id
+   * @param req the http request object
+   * @param res the http response object
+   */
+  public getPdfDocumentFileById(req: Request, res: Response): void {
+    // -- Documents local storage directory
+    const directoryPath = './storages';
+    let document = this.documentService.getById(req.params.id);
+    if (document) {
+      // -- Read pdf document from local storage file system 
+      let documentFile = fs.readFileSync(`${directoryPath}/${document.name}`);
+      // -- Set http response content type as pdf
+      res.contentType("application/pdf");
+      res.send(documentFile);
+    } else {
+      res.status(404).send({
+        'error': 'document not found'
+      });
+    }
+  }
+
+  /**
+ * Get thumbnail of pdf document file by id
+ * @param req the http request object
+ * @param res the http response object
+ */
+  public getThumbnailOfPdfFileById(req: Request, res: Response): void {
+    // -- Documents local storage directory
+    const directoryPath = './storages';
+    let document = this.documentService.getById(req.params.id);
+    if (document) {
+      // -- Read thumbnail image from local storage file system 
+      let thumbnailOfPdfFile = fs.readFileSync(`${directoryPath}/${document.thumbnail}`);
+      // -- Set http response content type as png
+      res.contentType("image/png");
+      res.send(thumbnailOfPdfFile);
+    } else {
+      res.status(404).send({
+        'error': 'document not found'
+      });
+    }
   }
 
   /**
@@ -223,47 +307,44 @@ export class DocumentController {
     }
   }
 
-    /**
+  /**
    * Send pdf processing completed webhook event
    * @param webhookUrl the endpoint of webhook to send message
    * @param documentId the id of pdf document
    * @param documentName the name of pdf document
    */
-    private async sendCompletedPdfProcessingWebhook(
-      webhookUrl: string,
-      documentId: string,
-      documentName: string): Promise<void> {
-      await axios.post(webhookUrl, {
-        eventType: "pdf.processing",
-        eventId: `evt-${uuidv4()}`,
-        payload: {
-          id: documentId,
-          documentName: documentName,
-          status: 'completed',
-          message: 'PDF processing completed successfully'
-        },
-      });
-      console.log('PDF processing completed webhook sent successfully!');
-    }
-  
-    /**
-     * Send pdf processing error webhook event
-     * @param webhookUrl the endpoint of webhook to send message
-     * @param documentName the name of pdf document
-     */
-    private async sendPdfProcessingErrorWebhook(webhookUrl: string, documentName: string): Promise<void> {
-      await axios.post(webhookUrl, {
-        eventType: "pdf.processing",
-        eventId: `evt-${uuidv4()}`,
-        payload: {
-          documentName: documentName,
-          status: 'error',
-          message: 'Error occured when pdf processing'
-        },
-      });
-      console.log('PDF processing error webhook sent successfully!');
-    }
+  private async sendCompletedPdfProcessingWebhook(
+    webhookUrl: string,
+    documentId: string,
+    documentName: string): Promise<void> {
+    await axios.post(webhookUrl, {
+      eventType: "pdf.processing",
+      eventId: `evt-${uuidv4()}`,
+      payload: {
+        id: documentId,
+        documentName: documentName,
+        status: 'completed',
+        message: 'PDF processing completed successfully'
+      },
+    });
+    console.log('PDF processing completed webhook sent successfully!');
+  }
 
-
-
+  /**
+   * Send pdf processing error webhook event
+   * @param webhookUrl the endpoint of webhook to send message
+   * @param documentName the name of pdf document
+   */
+  private async sendPdfProcessingErrorWebhook(webhookUrl: string, documentName: string): Promise<void> {
+    await axios.post(webhookUrl, {
+      eventType: "pdf.processing",
+      eventId: `evt-${uuidv4()}`,
+      payload: {
+        documentName: documentName,
+        status: 'error',
+        message: 'Error occured when pdf processing'
+      },
+    });
+    console.log('PDF processing error webhook sent successfully!');
+  }
 }
