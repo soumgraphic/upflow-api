@@ -47,7 +47,7 @@ export class DocumentController {
 
     // -- Get document name from url 
     const documentName = path.basename(docUrl);
-
+    
     // -- Check document is pdf
     if (!Utils.isValidPdfUrl(docUrl)) {
       console.log("Error: invalid pdf url");
@@ -90,7 +90,18 @@ export class DocumentController {
       // -- Generate and save pdf document thumbnail with first page
       await this.generatePdfThumbnail(directoryPath, documentName);
 
+      // -- Send pdf processing completed webhook event
+      this.sendCompletedPdfProcessingWebhook(
+        'http://localhost:3000/api/v1/webhooks',
+        documentToCreateId,
+        documentName
+      );
     } catch (error) {
+      // -- Send pdf processing error webhook event when error occured
+      this.sendPdfProcessingErrorWebhook(
+        'http://localhost:3000/api/v1/webhooks',
+        documentName
+      );
       console.error(error);
     }
   }
@@ -211,6 +222,47 @@ export class DocumentController {
       throw new Error(error);
     }
   }
+
+    /**
+   * Send pdf processing completed webhook event
+   * @param webhookUrl the endpoint of webhook to send message
+   * @param documentId the id of pdf document
+   * @param documentName the name of pdf document
+   */
+    private async sendCompletedPdfProcessingWebhook(
+      webhookUrl: string,
+      documentId: string,
+      documentName: string): Promise<void> {
+      await axios.post(webhookUrl, {
+        eventType: "pdf.processing",
+        eventId: `evt-${uuidv4()}`,
+        payload: {
+          id: documentId,
+          documentName: documentName,
+          status: 'completed',
+          message: 'PDF processing completed successfully'
+        },
+      });
+      console.log('PDF processing completed webhook sent successfully!');
+    }
+  
+    /**
+     * Send pdf processing error webhook event
+     * @param webhookUrl the endpoint of webhook to send message
+     * @param documentName the name of pdf document
+     */
+    private async sendPdfProcessingErrorWebhook(webhookUrl: string, documentName: string): Promise<void> {
+      await axios.post(webhookUrl, {
+        eventType: "pdf.processing",
+        eventId: `evt-${uuidv4()}`,
+        payload: {
+          documentName: documentName,
+          status: 'error',
+          message: 'Error occured when pdf processing'
+        },
+      });
+      console.log('PDF processing error webhook sent successfully!');
+    }
 
 
 
