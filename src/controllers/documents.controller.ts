@@ -4,7 +4,8 @@ import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { DocumentService } from '../services/documents.service';
 import { Document } from '../models/document.model';
-import {Utils} from '../utilities/utils';
+import { DocumentResponse } from '../models/document.response.models';
+import { Utils } from '../utilities/utils';
 import axios from 'axios';
 
 export class DocumentController {
@@ -45,7 +46,7 @@ export class DocumentController {
 
     // -- Get document name from url 
     const documentName = path.basename(docUrl);
-    
+
     // -- Check document is pdf
     if (!Utils.isValidPdfUrl(docUrl)) {
       console.log("Error: invalid pdf url");
@@ -90,6 +91,21 @@ export class DocumentController {
   }
 
   /**
+ * Get document list
+ * @param req the http request object
+ * @param res the http response object
+ */
+  public get(req: Request, res: Response): void {
+    // -- Get api host url
+    let fullUrl: string = Utils.getFullUrl(req);
+    // -- Build documents with api host url to view or download pdf files
+    let documentResponses: Array<DocumentResponse> = this.documentService
+      .get()
+      .map((document) => Utils.mapToDocumentResponse(fullUrl, document));
+    res.send(documentResponses);
+  }
+
+  /**
    * Create local storage directory in file system if it doesn't already exist
    * @param directoryPath the path of local storage directory
    */
@@ -113,7 +129,7 @@ export class DocumentController {
    * @returns new document with the information provided
    */
   private buildDocument(id: string, name: string, owner: string): Document {
-    
+
     return new Document(
       id,
       name,
