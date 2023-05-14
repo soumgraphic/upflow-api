@@ -1,0 +1,138 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "upflow-api",
+    "dateExported": "2023-05-14T22:17:39.513Z",
+    "version": "1.1",
+    "folders": [
+        {
+            "_id": "c54be7f6-6e72-4fa1-9705-dc7113b6f21a",
+            "name": "Documents",
+            "containerId": "",
+            "created": "2023-05-14T22:01:53.367Z",
+            "sortNum": 10000
+        },
+        {
+            "_id": "9a5d7cb4-3769-493e-84f8-7f388fe837b7",
+            "name": "Webhooks",
+            "containerId": "",
+            "created": "2023-05-14T22:07:23.709Z",
+            "sortNum": 20000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "cfc6fd08-bac2-4c67-897b-de0cea84605b",
+            "colId": "9ce355fd-c8e4-41b9-909c-9544ab1d2291",
+            "containerId": "c54be7f6-6e72-4fa1-9705-dc7113b6f21a",
+            "name": "Get the list of documents",
+            "url": "http://localhost:3000/api/v1/documents",
+            "method": "GET",
+            "sortNum": 10000,
+            "created": "2023-05-14T21:58:05.583Z",
+            "modified": "2023-05-14T22:01:56.774Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "f902085e-37b4-4a97-95b7-9e901c9eafe9",
+            "colId": "9ce355fd-c8e4-41b9-909c-9544ab1d2291",
+            "containerId": "c54be7f6-6e72-4fa1-9705-dc7113b6f21a",
+            "name": "Add new pdf document",
+            "url": "http://localhost:3000/api/v1/documents",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2023-05-14T21:59:24.018Z",
+            "modified": "2023-05-14T22:09:45.102Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"docUrl\": \"https://about.gitlab.com/images/press/git-cheat-sheet.pdf\",\n  \"owner\": \"diarra176@gmail.com\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "5c17560c-d96a-4000-aa9f-f4a394af3859",
+            "colId": "9ce355fd-c8e4-41b9-909c-9544ab1d2291",
+            "containerId": "c54be7f6-6e72-4fa1-9705-dc7113b6f21a",
+            "name": "Get document by id",
+            "url": "http://localhost:3000/api/v1/documents/062ba958-4288-402b-b62b-685e4edd4f2b",
+            "method": "GET",
+            "sortNum": 30000,
+            "created": "2023-05-14T22:02:16.294Z",
+            "modified": "2023-05-14T22:02:42.917Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "4e11347a-a3c9-48bd-92c5-430191f46bfd",
+            "colId": "9ce355fd-c8e4-41b9-909c-9544ab1d2291",
+            "containerId": "c54be7f6-6e72-4fa1-9705-dc7113b6f21a",
+            "name": "Get document by name",
+            "url": "http://localhost:3000/api/v1/documents?name=git-cheat-sheet.pdf",
+            "method": "GET",
+            "sortNum": 40000,
+            "created": "2023-05-14T22:03:13.504Z",
+            "modified": "2023-05-14T22:03:33.224Z",
+            "headers": [],
+            "params": [
+                {
+                    "name": "name",
+                    "value": "git-cheat-sheet.pdf",
+                    "isPath": false
+                }
+            ],
+            "tests": []
+        },
+        {
+            "_id": "2b4f6f3f-52a7-4b9d-976f-2d973082f880",
+            "colId": "9ce355fd-c8e4-41b9-909c-9544ab1d2291",
+            "containerId": "c54be7f6-6e72-4fa1-9705-dc7113b6f21a",
+            "name": "Download pdf document",
+            "url": "http://localhost:3000/api/v1/documents/062ba958-4288-402b-b62b-685e4edd4f2b/view",
+            "method": "GET",
+            "sortNum": 50000,
+            "created": "2023-05-14T22:04:36.178Z",
+            "modified": "2023-05-14T22:04:41.037Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "4ee55403-5bdf-41d3-8acf-3e6d13a57d41",
+            "colId": "9ce355fd-c8e4-41b9-909c-9544ab1d2291",
+            "containerId": "c54be7f6-6e72-4fa1-9705-dc7113b6f21a",
+            "name": "Download pdf document thumbnail",
+            "url": "http://localhost:3000/api/v1/documents/062ba958-4288-402b-b62b-685e4edd4f2b/thumbnail",
+            "method": "GET",
+            "sortNum": 60000,
+            "created": "2023-05-14T22:05:46.474Z",
+            "modified": "2023-05-14T22:05:51.615Z",
+            "headers": [],
+            "params": [],
+            "tests": []
+        },
+        {
+            "_id": "077d8c02-d932-433e-9e8f-035374311770",
+            "colId": "9ce355fd-c8e4-41b9-909c-9544ab1d2291",
+            "containerId": "9a5d7cb4-3769-493e-84f8-7f388fe837b7",
+            "name": "Consume webhook event",
+            "url": "http://localhost:3000/api/v1/webhooks",
+            "method": "POST",
+            "sortNum": 70000,
+            "created": "2023-05-14T22:08:07.306Z",
+            "modified": "2023-05-14T22:13:01.124Z",
+            "headers": [],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\r\n  \"eventType\": \"pdf.processing\",\r\n  \"eventId\": \"evt-512ce108-0d88-476f-9087-f7b99512902c\",\r\n  \"payload\": {\r\n    \"id\": \"0a2926c5-7dfa-4243-ac5f-bbbb830d8393\",\r\n    \"documentName\": \"git-cheat-sheet-education.pdf\",\r\n    \"status\": \"completed\",\r\n    \"message\": \"PDF processing completed successfully\"\r\n  }\r\n}",
+                "form": []
+            },
+            "tests": []
+        }
+    ]
+}

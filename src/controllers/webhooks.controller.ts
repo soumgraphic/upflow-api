@@ -14,7 +14,7 @@ export class WebhookController{
             if(req.body){
                 console.log("📰 New webhook event received");
                 console.log(req.body);
-                res.status(200).send(`Webhook event ${req.body.eventId} received successfully`);
+                res.status(200).send({"message": `Webhook event ${req.body.eventId} received successfully`});
             }
           } catch (error) {
             res.status(500).json({"error": "something went wrong"});
