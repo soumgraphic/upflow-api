@@ -14,6 +14,25 @@ export class DocumentService{
     }
 
     /**
+     * Add thumbnail to document in document list
+     * @param thumbnail the thumbnail to add in document 
+     * @param documentId the id of document to update with thumbnail
+     */
+    public addThumbnail(thumbnail: string, documentId: string): void{
+        // -- Get document by index
+        const documentIndex = this.documents.findIndex((doc) => doc.id == documentId);
+        // -- Check if document exist
+        if(documentIndex !== -1){
+            // -- Get document to update
+            let documentToUpdate = this.documents[documentIndex];
+            // -- Update document with thumbnail
+            documentToUpdate.thumbnail = thumbnail;
+            // -- Update document list with document updated
+            this.documents[documentIndex] = documentToUpdate;
+        }
+    }
+
+    /**
      * Check if document already exist by name
      * @param docNameToCheck the document name to check if exist
      * @returns true if document already exist by name
