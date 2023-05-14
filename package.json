@@ -1,0 +1,17 @@
+{
+  "name": "upflow-api",
+  "version": "1.0.0",
+  "description": "Upflow documents API",
+  "main": "app.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "api",
+    "micro-service",
+    "upflow",
+    "documents"
+  ],
+  "author": "Soumaila Abdoulaye DIARRA",
+  "license": "ISC"
+}
