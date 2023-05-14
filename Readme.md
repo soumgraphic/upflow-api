@@ -6,6 +6,8 @@ API to load pdf file from a url, store it in the local storage, generate the thu
 
 + Add pdf document by url
 
++ Detect pdf files duplicate
+
 + Show the pdf list and associated thumbnails
 
 + Download pdf document
