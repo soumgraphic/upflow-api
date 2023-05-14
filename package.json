@@ -2,9 +2,12 @@
   "name": "upflow-api",
   "version": "1.0.0",
   "description": "Upflow documents API",
-  "main": "app.ts",
+  "main": "src/app.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tsc",
+    "start": "node dist/app.js",
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/app.js\""
   },
   "keywords": [
     "api",
