@@ -7,6 +7,7 @@ import { Document } from '../models/document.model';
 import { DocumentResponse } from '../models/document.response.models';
 import { Utils } from '../utilities/utils';
 import axios from 'axios';
+import * as pdf2img from 'pdf-img-convert';
 
 export class DocumentController {
 
@@ -85,6 +86,10 @@ export class DocumentController {
 
       // -- Save pdf document file in local storage directory
       await this.saveDocumentFileInLocalStorage(docUrl, directoryPath, documentName);
+
+      // -- Generate and save pdf document thumbnail with first page
+      await this.generatePdfThumbnail(directoryPath, documentName);
+
     } catch (error) {
       console.error(error);
     }
@@ -166,6 +171,41 @@ export class DocumentController {
         writer.on('error', reject);
       });
       console.log('PDF document file saved in local storage successfully !');
+    } catch (error) {
+      console.error(error);
+      throw new Error(error);
+    }
+  }
+
+  /**
+ * Generate a thumbnail of the first page of a PDF document
+ * @param directoryPath the path of local storage directory
+ * @param documentName the name of pdf document
+ */
+  private async generatePdfThumbnail(directoryPath: string, documentName: string): Promise<void> {
+    let pdfPath: string = `${directoryPath}/${documentName}`;
+    let documentNameWithoutExtension = Utils.removeFileExtension(documentName);
+    let thumbnailPath: string = `${directoryPath}/${documentNameWithoutExtension}.png`;
+
+    // -- Init pdf2img with the path of pdf file
+    let outputPdfThumbnail = pdf2img.convert(pdfPath);
+
+    try {
+      // -- Use a Promise to write the PNG data to a file system directory and wait for the write to finish
+      await new Promise<void>((resolve, reject) => {
+        // -- Generate thumbnail image from pdf file first page and save local storage directory
+        outputPdfThumbnail.then(function (outputImages) {
+          fs.writeFile(thumbnailPath, outputImages[0], (error) => {
+            if (error) {
+              console.error(error);
+              reject(error);
+            } else {
+              console.log('PDF png thumbnail saved in local storage successfully !');
+              resolve();
+            }
+          });
+        });
+      });
     } catch (error) {
       console.error(error);
       throw new Error(error);
