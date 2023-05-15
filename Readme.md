@@ -54,6 +54,7 @@ npm install -g ts-node
 **4. Run the app using npm in dev**
 
 ```bash
+npm run build
 npm run dev
 ```
 
